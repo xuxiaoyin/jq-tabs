@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+	<style>
+		.active{ background: red;}
+		#div1 div{ width: 200px; height: 200px; border: 1px solid #000; display: none;}
+	</style>
+</head>
+
+<script>
+$(function(){
+	$('#div1').tabs({
+		heads:['html','css','js','vue'],
+		bodys:['精通','熟练','掌握','了解']
+	});
+	
+	$('#div1').on('beforeChange',function(){
+		alert($(this).find('div:visible').html());
+	});
+	
+	$('#div1').on('afterChange',function(){
+		alert($(this).find('div:visible').html());
+	});
+	
+});
+
+(function($){
+	var parent=null;
+	var setting={};
+	var defaults={
+		heads:['1','2','3'],
+		bodys:['11111','22222','33333'],
+		events:'click'
+	};
+	function fnTab(options){
+		$.parent=this;
+		setting=$.extend(setting,defaults,options);
+		create();
+		bland();
+	};
+	
+	function create(){
+		for(var i=0;i<setting.heads.length;i++){
+			var $Inp=$('<input type="button" value="'+setting.heads[i]+'" />')
+			if(i==0){
+				$Inp.attr('class','active');
+			};		
+			$.parent.append($Inp);
+		};
+		
+		for(var i=0;i<setting.bodys.length;i++){
+			var $div=$('<div>'+setting.bodys[i]+'</div>')
+			if(i==0){
+				$div.css('display','block');
+			};		
+			$.parent.append($div);
+		};
+		
+	};
+	
+	function bland(){
+		$.parent.find('input').on(setting.events,function(){
+			$.parent.trigger('beforeChange');
+			$.parent.find('input').attr('class','');
+			$(this).attr('class','active');
+			$.parent.find('div').css('display','none');
+			$.parent.find('div').eq($(this).index()).css('display','block');
+			
+			$.parent.trigger('afterChange');
+		});
+	};
+	
+	$.fn.extend({
+		tabs:fnTab
+	});
+	
+})(jQuery);
+</script>
+<body>
+	<div id="div1">
+		<!--<input type="button" value="1" class="active" />
+		<input type="button" value="2" />
+		<input type="button" value="3" />
+		<div style="display: block;">11111</div>
+		<div>22222</div>
+		<div>33333</div>-->
+	</div>
+</body>
+</html>
